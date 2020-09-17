@@ -11,16 +11,12 @@
  %      t (n arrays of int)= amount of ties in the data 
  
  % check if data is a one dimentional array of floatss
- if isa(data,'float')==0
-     error('the input "data" of Nb_tie_D has to be an array of floats');
- elseif min(size(data))>1
-     error('the input "data" of Nb_tie_D has to be a 1-D array');
+ if isa(data,'float')==0 || min(size(data))>1
+     error('the input "data" of Nb_tie_D has to be a 1-D array of floats');
  end
  %check if resolution if a float
-  if isa(resolution,'float')==0
-     error('the input "resolution" of Nb_tie_D has to be an array of floats');
- elseif max(size(data))>1
-     error('the input "resolution" of Nb_tie_D has to be a single value');
+  if isa(resolution,'float')==0 || max(size(resolution))>1
+     error('the input "resolution" of Nb_tie_D has to be a single float value');
  end
  
  if sum(~isnan(data))>4

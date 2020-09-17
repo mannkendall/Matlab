@@ -1,15 +1,27 @@
 function Z=STD_normale_var(S,var_S)
 % calculate the normal standard variable  Z
-%see Gilbert 1987
 
-%in: S is the S statistic of the Mann-Kendall test computed from S_test
-%      it is a entire reprensenting the difference between the position and
-%      negative pais in the times series (TO DO: reformuler)
-% var-S if the variance of the time series taking into account the ties in
-%       values and time. It is computed by Kendall_var
+%input: 
+%       S (integer)= S statistic of the Mann-Kendall test computed from
+%           S_test 
+%       var_S (float)= variance of the time series taking into account the ties in
+%           values and time. It is computed by Kendall_var
 
-%out: Z is the S statistic weighted by the variance
-%Martine Collaud Coen, february 2019
+%output: 
+%       Z (float)= S statistic weighted by the variance
+
+% Source:
+%       Gilbert 1987
+
+% sanity checks first
+if isa(S,'float')==0 || max(size(S))>1
+    error('the input "S" of STD_normale_var has to be a 1-D float');
+end
+if isa(var_S,'float')==0 || max(size(var_S))>1
+    error('the input "var_S" of STD_normale_var has to be a 1-D float');
+end
+
+%compute Z
 if S==0
     Z=0;
 elseif S > 0

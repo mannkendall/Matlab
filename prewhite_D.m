@@ -1,53 +1,62 @@
 function dataPW=prewhite_D(data, colonne, resolution,varargin)
 
 %calculate all the necessary prewhitened datasets to asses the statistical
-%significance and to compute the slope the slope
+%significance and to compute the Sen's slope for each of the prewhitening
+%method, including 3PW
 
-%in: data as timetable, matrix or structure
-% colonne: to be suppressed
-%resolution= is used to compute the number of ties
-%varargin: alpha_ak = statistical significance on % for the first lag
-%                      autocorrelation. Default=95
+% inputs: 
+%       data (timetable with only one argument): data to analyse
+%       ?? colonne (integer or string) : define the data to use, TODO:to be suppressed
+%       resolution (float)= the measurement resolution, i.e. delta value below which 2 measurements
+%            are considered equivalent. It is used to compute the number of ties
+%
+% optional inputs: varargin: 
+%       alpha_ak = statistical significance in % for the first lag
+%                  autocorrelation. Default=95
 
-%out: timetable with 3 PW timeseries:
-%       data.PW = PW with the first lag autocorrelation of the data
-%       data.PW_cor=PW corrected with 1/(1-ak1)
-%       data.TFPW_WS = PW with the first lag autocorrelation of the data after
+% output: 
+%       dataPW (timetable): contains 5 PW timeseries:
+%           data.PW = PW with the first lag autocorrelation of the data
+%           data.PW_cor=PW corrected with 1/(1-ak1)
+%           data.TFPW_WS = PW with the first lag autocorrelation of the data after
 %                   detrending computed from PW data (see Wang & Swail)
-%       data.TFPW_Y= method of Yue et al 2002, not 1/1-ak1) correction,
+%           data.TFPW_Y= method of Yue et al 2002, not 1/1-ak1) correction,
 %                       detrend on original data
-%       data.VCTFPW = PW with the first lag autocorrelation of the data
+%           data.VCTFPW = PW with the first lag autocorrelation of the data
 %                   after detrending + correction of the PW data for the variance (see
 %                   Wang 2015)
 
 %Martine Collaud Coen, 9.2020
 
-% check arguments
+% First some sanity checks
+if isa(data,'timetable')==0 || min(size(data))>1
+    error('the input "data" of prewhite_D has to be a timetable');
+end
+if isa(resolution,'float')==0 || max(size(resolution))>1
+    error('the input "resolution" of Nb_tie_D has to be a single float');
+end
+ 
+% check optional arguments
 if ~varg_proof(varargin, {'alpha_ak'},true)
     return
 end
-
 % Set values from user input, or use defaults
 alpha_ak = varg_val(varargin, 'alpha_ak', 95);
-
-%determination of the data to analyse
-if isstruct(data)
-    time=data.start_time;
-    data=data.colonne;
-elseif istimetable(data)
-    time=datenum(data.Time);
-    data=data.(colonne);
-else
-    time=datenum(data(:,1:6));
-    data=data(:,colonne);
+if alpha_ak>100
+    error('the confidence limit has to be lower than 100%');
 end
+
+%determination of the array of time and of data
+ time=datenum(data.Time);
+    data=data.(colonne);
+%check for the presence of infinites
 data(abs(data)==inf)=NaN;
+% counter of the number of loops
 nb_loop=0;
-%create the timetable
+%create the output timetable
 dataPW=timetable(datetime(datevec(time)));
 %calcul de l'autocorrelation:
 [c.PW, dataARremoved, c.ss]= nanprewhite_ARok(data,'alpha_ak',alpha_ak);
-
 
 % compute data PW corrected
 if sum(~isnan(dataARremoved))>0 & c.ss==alpha_ak & c.PW>=0.05
@@ -55,7 +64,7 @@ if sum(~isnan(dataARremoved))>0 & c.ss==alpha_ak & c.PW>=0.05
     dataPW.PW_cor= dataARremoved./(1-c.PW);
     
     % data VCTFPW corrected
-    %calcul of the trend slope o the PW data
+    %calcul of the trend slope of the PW data
     
     t=Nb_tie_D(dataARremoved./(1-c.PW),resolution);
     [~,n]=S_test(dataARremoved./(1-c.PW), time);
@@ -154,15 +163,9 @@ if sum(~isnan(dataARremoved))>0 & c.ss==alpha_ak & c.PW>=0.05
 else %no s.s. autocorrelation
     dataPW.PW= data;
     dataPW.PW_cor= data;
-    %c.PW=0;
     dataPW.TFPW_Y= data;
      dataPW.TFPW_WS= data;
-    %c.TFPW=0;
     dataPW.VCTFPW= data;
-    %c.VCTFPW=0;
-% % %     c.VCTFPW=NaN;
-% % %     c.ssVC=NaN;
-% % %     c.TFPW_WS=NaN;
 end
 
 fclose('all');

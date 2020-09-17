@@ -19,6 +19,18 @@ function varargout=nanautocorr(data,nlags,R)
 % author : Fabio Oriani.1, fabio.oriani@unine.ch
 %    (.1 Chyn,University of Neuchâtel)
 
+%add some sanity checks
+if isa(data,'float')==0 || min(size(data))>1
+         error('the input "data" of nanautocorr has to be an 1-D array of floats');
+end
+if isa(nlags,'double')==0 || min(size(nlags))>1
+         error('the input "nlags" of nanautocorr has to be an integer');
+end
+if isa(R,'double')==0 || min(size(R))>1
+         error('the input "R" of nanautocorr has to be an integer');
+end
+
+% check row and validity of computed autocorrelation
 if isrow(data)
     data=data';
 elseif sum(isnan(data))>sum(not(isnan(data)))/3
