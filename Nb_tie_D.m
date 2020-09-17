@@ -1,17 +1,32 @@
  function t=Nb_tie_D(data,resolution)
  
- % compute the number of data considered as equivalent and treated as ties
+ % compute the number of data considered equivalent and treated as ties
  
- %in: data= data to be analysed
-
- % resolution is the measurement resolution, i.e. the interval between which 2 measures are considered as equals
+ %in:
+ %      data (array of floats)= data to be analysed, must be 1-D
+ %      resolution ((float)= the measurement resolution, i.e. delta value
+ %      below which 2 measurements are considered equivalent
  
- % out: vector with the number of data per tie 
+ %out: 
+ %      t (n arrays of int)= amount of ties in the data 
+ 
+ % check if data is a one dimentional array of floatss
+ if isa(data,'float')==0
+     error('the input "data" of Nb_tie_D has to be an array of floats');
+ elseif min(size(data))>1
+     error('the input "data" of Nb_tie_D has to be a 1-D array');
+ end
+ %check if resolution if a float
+  if isa(resolution,'float')==0
+     error('the input "resolution" of Nb_tie_D has to be an array of floats');
+ elseif max(size(data))>1
+     error('the input "resolution" of Nb_tie_D has to be a single value');
+ end
  
  if sum(~isnan(data))>4
      m=min(data);
      M=max(data);
-     %determine the domains containing the data
+     %determine the bin edges containing the data
      if (m<0 & M<0) | (m>0 & M>0)
          interval=abs(M-m);
      else
@@ -21,13 +36,14 @@
          error('the given resolution is too large for the considered dataset');
      end
      step=interval/resolution;
-     while step>1000
-         resolution=resolution*2;
-         step=interval/resolution;
-     end
-     t=hist(real(data),step)';
-     fclose('all');
- else
+     % if the time series is too big and generate a memory error
+     % the number of bins can be decreased with usually low impact on the Mann-Kendall results
+% %      while step>1000
+% %          resolution=resolution*2;
+% %          step=interval/resolution;
+% %      end
+     t=hist(real(data),step)'; 
+ else %if the time series contains less than 4 data, return NaN
      t=NaN;
  end
-
+fclose('all');
