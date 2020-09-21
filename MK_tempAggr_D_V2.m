@@ -1,55 +1,84 @@
 function result=MK_tempAggr_D_V2(data_tempAgg, PW_method, resolution, varargin)
 
-% The MK test and the Sen slope is applied on the given time granularity
-% Three prewhitening methods are applied. PW (Yue et al., 2002) and TFPW_Y(trend free PW, Wang and Swail, 2001)
-%to compute the statistical significance and VCTFPW (Wang, W., Chen, Y., Becker, S., & Liu, B. (2015). Variance Correction Prewhitening Method for Trend Detection in Autocorrelated Data. J. Hydrol. Eng., 20(12), 4015033-1-04015033�10. https://doi.org/10.1061/(ASCE)HE.1943-5584.0001234.)
-%to compute the Sen's slope
-% only the statistically significant autocorrelation are taken into account
-% for the prewhitening.
-% The ss of the trends is taken at 95% confidence limit
-% The upper and lower confidence limits are given by the 90% of the all intervals differences distribution.
-% The significance level is given by the MK test and has therefore no direct
-%relation to the confidences limits.
-% if seasonal Mann-Kendall is applied, the yearly trend is assigned only if
-% the results of the seasonal test are homogeneous. In case of not ss
+% The MK test and the Sen slope are applied on the given time granularity,
+% temporal aggregation and prewhitening method.
+% Five prewhitening methods can be chosen:
+%   3PW (Collaud Coen et al., 2020): 3 prewhitening methods are applied (PW
+%       and TFPW_Y to determine the statistic significance (ss) of the MK test
+%       and the VCTFPW method to compute the Sen's slope
+%   PW (prewhitened, Kulkarni and von Storch, 1995)
+%   TFPW_Y(trend free PW,Yue et al., 2001)
+%   TFPW_WS (trend free PW, Wang and Swail, 2001)
+%   VCTFPW (variance corrected trend free PW, Wang et al., 2015)
 
-%references:  WMO-GAW publication N. 133, annexe E, p. 26
-% and the explanations of  MULTMK/PARTMK de C. Libiseller
-% and the book ofof Gilbert 1998
+% For the PW,only ss autocorrelation are taken into account
+% The default ss for the MK test is taken at 95% confidence limit
+% The default ss for upper and lower confidence limits is 90% of the all intervals differences distribution.
+% The default ss for the autocorrelation coefficient is 95%.
+% The default ss for the homogeneity test between temporal aggregation of
+%   the MK test is 90%.
+% If seasonal Mann-Kendall is applied, the yearly trend is assigned only if
+%   the results of the seasonal test are homogeneous. The default ss for the homogeneity test 
+%   between temporal aggregation of the seasonal MK test is 90%.
 
 
-%IN
-% data_tempAgg is a timetable, or a structure of timetables if the seasonal
-% Mann-Kendall test with a temporal segmentation is used. The timetable should have
-% only one field (apart the time).
-% PW_method is the used PW method (3PW; PW, TFPW_Y, TFPW_WS, VCTFPW). Default is 3PW.
-% resolution is taken into account to determine the number of ties. I
-% always take it similar to the resolution of the instrument or a little
-% bit higher. This parameters can be determinant for the results but not very
-% sensitive.
-% varargin: alpha_MK: confidence limit for Mk test in %. Default value is 95%
-%           alpha_CL: confidence limit for the confidence limits of the Sen's slope in %. Default value is 90%
-%           alpha_Xhomo: confidence limit for the homogeneity between seasons in %. Default value is 90%
-%           alpha_ak: confidence limit for the first lag autocorrelation in %. Default value is 95%
+% INPUT:
+%   data_tempAgg (n arrays)= a unique timetable if MK test without temporal
+%       aggregation has to be used or a sturcture of timetables if the seasonal
+%       MK test has to be applied. Each "season" is given by one timetable in the structure.
+%       The timetable should have only one field (apart the time).
+%   PW_method (string)=  used PW method (3PW; PW, TFPW_Y, TFPW_WS, VCTFPW). Default is 3PW.
+%   resolution (float)= interval to determine the number of ties. It should
+%       be similar to the resolution of the instrument.
 
-%OUT
-%The result is a table  with the following fields
-%result.period:year or 12 monthes + year or 4 meteorological seasons+year (TO DO ????)
-%result.P: probability for the statistical significance. If 3PW is applied,
-%P= max(P_PW, P_TFPW_Y);
-%result.ss= statistical significance: alpha% if the test is ss at the alpha
-%confidence level. Default=95%
-%                                     0 if the test is not ss at the alpha
-%                                       confidence level
-%                                     -1 if the test is a TFPW_Y false
-%                                       positive at alpha% confidence level
-%                                     -2 if the test is a PW false
-%                                       positive at alpha% confidence level
-%result.slope: Sen's slope in units/y
-%result.UCL: upper confidence level in units/y
-%result.LCL: lower confidence level in units/
+% Optional input: varargin: 
+%     alpha_MK (float)= confidence limit for Mk test in %. Default value is 95%
+%     alpha_CL(float)= confidence limit for the confidence limits of the Sen's slope in %. Default value is 90%
+%     alpha_Xhomo(float)= confidence limit for the homogeneity between seasons in %. Default value is 90%
+%     alpha_ak(float)= confidence limit for the first lag autocorrelation in %. Default value is 95%
 
-% Martine Collaud Coen , MeteoSwiss, 9.2020
+%OUTPUT:
+%   result (table)= comprises the following fields
+%       result.P (float): probability for the statistical significance. If 3PW is applied,
+%           P= max(P_PW, P_TFPW_Y);
+%       result.ss (float)= statistical significance: 
+%                       alpha_MK if the test is ss at the alpha confidence level. Default=95%        
+%                       0 if the test is not ss at the alpha_MK confidence level        
+%                       -1 if the test is a TFPW_Y fals epositive at alpha_MK confidence level
+%                       -2 if the test is a PW false positive at alpha_MK confidence level                                      
+%       result.slope (float): Sen's slope in units/y
+%       result.UCL (float): upper confidence level in units/y
+%       result.LCL (float): lower confidence level in units/y
+
+% Sources:  
+%   Collaud Coen et al., Effects of the prewhitening method, the time granularity
+%    and the time segmentation on the Mann-Kendall trend detection and the associated Sen's slope
+%    Atmos. Meas. Tech. Discuss,https://doi.org/10.5194/amt-2020-178, in review,
+%    2020.
+%   Sirois, A.: A brief and biased overview of time-series analysis of how to find that evasive trend, WMO/EMEP Workshop on Advanced Statistical Methods and Their Application to Air Quality Data Sets, Annex E., Global Atmosphere Watch No. 133, TD- No. 956, World Meteorological Organization, Geneva, Switzerland, 1998. annexe E, p. 26
+%   Gilbert, R.: Statistical Methods for Environmental Pollution Monitoring, Van Nostrand Reinhold Company, New York, 1987. 
+%   and the explanations about MULTMK/PARTMK de C. Libiseller
+
+% First some sanity checks
+if ~(isa(data_tempAgg,'timetable')==1 | isstruct(data_tempAgg)==1)
+    error('data_tempAgg has to be a timetable or a structure');
+elseif isstruct(data_tempAgg)==1 
+end
+% check if the element of the structure are timetables
+if isstruct(data_tempAgg)
+    n=fieldnames(data_tempAgg); % take the field names of the elements in the structure
+    for i=1:length(n)
+        if isa(data_tempAgg.(n{i}),'timetable')==0
+            error('each element of data_tempAgg has to be a timetable');
+        end
+    end 
+end
+if strcmp(PW_method,["3PW";"PW";"TFPW_Y";"TFPW_WS";"VCTFPW"])==0 
+    error('PW_method has to be comprised in  ["3PW";"PW";"TFPW_Y";"TFPW_WS";"VCTFPW"]');
+end
+if isa(resolution,'float')==0 || max(size(resolution))>1
+    error('the input "resolution" of compute_MK_stat has to be a single float');
+end
 
 % check arguments
 if ~varg_proof(varargin, {'alpha_MK','alpha_CL','alpha_Xhomo','alpha_ak'},true)
@@ -90,8 +119,8 @@ end
 if n==1
     data=data_tempAgg;
     %compute all the prewhitened time series
-    % dataPW is a structure containing the 3 prewhitened data.ak_y is the first
-    % lag autocorrelation coefficient for the complete time series
+    % dataPW is a structure containing the 3 prewhitened data. 
+    % ak_y is the first lag autocorrelation coefficient for the complete time series
     dataPW=prewhite_D(data, (obs{1}), resolution,'alpha_ak',alpha_ak);
     % compute the  Mann-Kendall test without temporal aggregation
     switch PW_method
@@ -168,14 +197,7 @@ elseif n>1
                     % compute the slope and confidence limits for a year [units/y]
                     result(m).slope=result_VCTFPW(m).slope;
                     result(m).UCL=result_VCTFPW(m).UCL;
-                    result(m).LCL=result_VCTFPW(m).LCL;
-                    % % %                 % compute them as percentage [%/y]
-                    % % %                 result(m).median=result_VCTFPW(m).median;
-                    % % %                 result(m).slopeP=result_VCTFPW(m).slopeP;
-                    % % %                 result(m).UCLP=result_VCTFPW(m).UCLP;
-                    % % %                 result(m).LCLP=result_VCTFPW(m).LCLP;
-                    % % %                 ak=ak_y.VCTFPW;
-                    
+                    result(m).LCL=result_VCTFPW(m).LCL;         
             end
             
         else
@@ -185,17 +207,12 @@ elseif n>1
             result(m).slope=NaN;
             result(m).UCL=NaN;
             result(m).LCL=NaN;
-            % % %         result(m).median=NaN;
-            % % %         result(m).slopeP=NaN;
-            % % %         result(m).UCLP=NaN;
-            % % %         result(m).LCLP=NaN;
         end
     end
     
     %compute for the whole period, that is the whole year
     switch PW_method
         case {'PW','TFPW_Y','TFPW_WS','VCTFPW'}
-            %%%result(m+1).ak=ak;
             Ztot=STD_normale_var(nansum(S),nansum(vari));
             if sum(~isnan(dataPW.PW)) > 10
                 result(m+1).P=2*(1-normcdf(abs(Ztot),0,1));
@@ -208,16 +225,12 @@ elseif n>1
             else
                 result(m+1).ss= 0;
             end
-            %%%result(m+1).median=nanmedian(dataPW.PW);
             
             %compute xi-carre to test the homogeneity between months.
-            %TO DO: change Xhomo as a function of alpha_Xhomo and the number of
-            %the seasons
             Xhomo=nansum(Z(1:m).^2)-12*(nanmean(Z(1:m))).^2;
             
         case '3PW'
             % compute the statistical significance for PW
-            %%%result(m+1).ak=ak;
             Ztot_PW=STD_normale_var(nansum(S_PW),nansum(vari_PW));
             if sum(~isnan(dataPW.PW)) > 10
                 Ptot_PW=2*(1-normcdf(abs(Ztot_PW),0,1));
@@ -245,7 +258,7 @@ elseif n>1
     %freedom. Seasonal trends are homogeneous is Xhomo is smaller
     %than the threshold defined by the degree of freedom and the
     %confidence level alpha_Xhomo.
-    %change condition: yearly slope not given if the seasons are not
+    %condition: yearly slope not given if the seasons are not
     %homogeneous
     
     if Xhomo<=chi2inv(1-alpha_Xhomo/100,n-1)
@@ -258,10 +271,6 @@ elseif n>1
         result(m+1).UCL=NaN;
         result(m+1).LCL=NaN;
     end
-    % %     % result(m+1).median=nanmedian(dataPW.VCTFPW);
-    % %     % result(m+1).slopeP=(result(m+1).slope.*100)./abs(result(m+1).median);
-    % %     % result(m+1).UCLP=(result(m+1).UCL.*100)'./abs(result(m+1).median);
-    % %     % result(m+1).LCLP=(result(m+1).LCL.*100)'./abs(result(m+1).median);
     
 end
 fclose('all');
