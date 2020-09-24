@@ -1,8 +1,8 @@
-function result=MK_tempAggr_D_V2(data_tempAgg, PW_method, resolution, varargin)
+function result=MK_tempAggr_D_V2(data_tempAgg, resolution, varargin)
 
 % The MK test and the Sen slope are applied on the given time granularity,
 % temporal aggregation and prewhitening method.
-% Five prewhitening methods can be chosen:
+% Five prewhitening methods can be chosen, 3PW being the default option:
 %   3PW (Collaud Coen et al., 2020): 3 prewhitening methods are applied (PW
 %       and TFPW_Y to determine the statistic significance (ss) of the MK test
 %       and the VCTFPW method to compute the Sen's slope
@@ -27,11 +27,11 @@ function result=MK_tempAggr_D_V2(data_tempAgg, PW_method, resolution, varargin)
 %       aggregation has to be used or a sturcture of timetables if the seasonal
 %       MK test has to be applied. Each "season" is given by one timetable in the structure.
 %       The timetable should have only one field (apart the time).
-%   PW_method (string)=  used PW method (3PW; PW, TFPW_Y, TFPW_WS, VCTFPW). Default is 3PW.
 %   resolution (float)= interval to determine the number of ties. It should
 %       be similar to the resolution of the instrument.
 
 % Optional input: varargin: 
+%     PW_method (string)=  used PW method (3PW; PW, TFPW_Y, TFPW_WS, VCTFPW). Default is 3PW.
 %     alpha_MK (float)= confidence limit for Mk test in %. Default value is 95%
 %     alpha_CL(float)= confidence limit for the confidence limits of the Sen's slope in %. Default value is 90%
 %     alpha_Xhomo(float)= confidence limit for the homogeneity between seasons in %. Default value is 90%
@@ -68,28 +68,31 @@ end
 if isstruct(data_tempAgg)
     n=fieldnames(data_tempAgg); % take the field names of the elements in the structure
     for i=1:length(n)
-        if isa(data_tempAgg.(n{i}),'timetable')==0
+        test=data_tempAgg.(n{i});
+        if isa(test,'timetable')==0
             error('each element of data_tempAgg has to be a timetable');
         end
     end 
-end
-if strcmp(PW_method,["3PW";"PW";"TFPW_Y";"TFPW_WS";"VCTFPW"])==0 
-    error('PW_method has to be comprised in  ["3PW";"PW";"TFPW_Y";"TFPW_WS";"VCTFPW"]');
 end
 if isa(resolution,'float')==0 || max(size(resolution))>1
     error('the input "resolution" of compute_MK_stat has to be a single float');
 end
 
 % check arguments
-if ~varg_proof(varargin, {'alpha_MK','alpha_CL','alpha_Xhomo','alpha_ak'},true)
+if ~varg_proof(varargin, {'PW_method','alpha_MK','alpha_CL','alpha_Xhomo','alpha_ak'},true)
     return
 end
 
 % Set values from user input, or use defaults
+PW_method=varg_val(varargin, 'PW_method', '3PW');
 alpha_MK = varg_val(varargin, 'alpha_MK', 95);
 alpha_CL = varg_val(varargin, 'alpha_CL', 90);
 alpha_Xhomo = varg_val(varargin, 'alpha_Xhomo', 90);
 alpha_ak = varg_val(varargin, 'alpha_ak', 95);
+
+if strcmp(PW_method,["3PW";"PW";"TFPW_Y";"TFPW_WS";"VCTFPW"])==0 
+    error('PW_method has to be comprised in  ["3PW";"PW";"TFPW_Y";"TFPW_WS";"VCTFPW"]');
+end
 
 % determine if seasons are present
 if isstruct(data_tempAgg)
