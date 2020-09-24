@@ -1,4 +1,4 @@
- function t=Nb_tie_D(data,resolution)
+ function t=Nb_tie(data,resolution)
  
  % compute the number of data considered equivalent and treated as ties
  

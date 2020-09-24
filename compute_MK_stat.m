@@ -47,7 +47,7 @@ if alpha_MK>100 || alpha_CL>100
     error('confidence limit should be smaller then 100%');
 end
 
-t=Nb_tie_D(data,resolution);
+t=Nb_tie(data,resolution);
 [S,n]=S_test(data,datenum(time));
 vari=Kendall_var(data,t,n);
 Z=STD_normale_var(S,vari) ;

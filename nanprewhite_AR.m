@@ -1,4 +1,4 @@
-function [ak_lag, data_prewhite, ak_ss]= nanprewhite_ARok(data,varargin)
+function [ak_lag, data_prewhite, ak_ss]= nanprewhite_AR(data,varargin)
 
 % Compute the first lag autocorrelation coefficient to prewhite the data as an AR(Kmax)function
 % The prewhitened data are computed only if ak_lag is ss at the alpha_ak

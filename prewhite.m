@@ -1,4 +1,4 @@
-function dataPW=prewhite_D(data, colonne, resolution,varargin)
+function dataPW=prewhite(data, colonne, resolution,varargin)
 
 %calculate all the necessary prewhitened datasets to asses the statistical
 %significance and to compute the Sen's slope for each of the prewhitening
@@ -56,7 +56,7 @@ nb_loop=0;
 %create the output timetable
 dataPW=timetable(datetime(datevec(time)));
 %calcul de l'autocorrelation:
-[c.PW, dataARremoved, c.ss]= nanprewhite_ARok(data,'alpha_ak',alpha_ak);
+[c.PW, dataARremoved, c.ss]= nanprewhite_AR(data,'alpha_ak',alpha_ak);
 
 % compute data PW corrected
 if sum(~isnan(dataARremoved))>0 & c.ss==alpha_ak & c.PW>=0.05
@@ -66,12 +66,12 @@ if sum(~isnan(dataARremoved))>0 & c.ss==alpha_ak & c.PW>=0.05
     % data VCTFPW corrected
     %calcul of the trend slope of the PW data
     
-    t=Nb_tie_D(dataARremoved./(1-c.PW),resolution);
+    t=Nb_tie(dataARremoved./(1-c.PW),resolution);
     [~,n]=S_test(dataARremoved./(1-c.PW), time);
     vari=Kendall_var(dataARremoved./(1-c.PW),t,n);
     [b0PW,~,~]=Sen_slope(time,dataARremoved./(1-c.PW),vari); %slope of PW data
     
-    t=Nb_tie_D(data,resolution);
+    t=Nb_tie(data,resolution);
     [~,n]=S_test(data, time);
     vari=Kendall_var(data,t,n);
     [b0or,~,~]=Sen_slope(time,data,vari); %slope of original data
@@ -80,9 +80,9 @@ if sum(~isnan(dataARremoved))>0 & c.ss==alpha_ak & c.PW>=0.05
     dataDetrendPW=data-b0PW*(time-time(1));
     dataDetrendor=data-b0or*(time-time(1));
     %compute the autocorrelation of the de-trended time series:
-    [c.VCTFPW, dataARremovedor, c.ssVC]= nanprewhite_ARok(dataDetrendor,'alpha_ak',alpha_ak);
+    [c.VCTFPW, dataARremovedor, c.ssVC]= nanprewhite_AR(dataDetrendor,'alpha_ak',alpha_ak);
     
-    [akPW, dataARremovedPW, ssPW]= nanprewhite_ARok(dataDetrendPW,'alpha_ak',alpha_ak);
+    [akPW, dataARremovedPW, ssPW]= nanprewhite_AR(dataDetrendPW,'alpha_ak',alpha_ak);
     
     %calcul of TFPW correction Yue et al., 2002
       %blended data
@@ -103,7 +103,7 @@ if sum(~isnan(dataARremoved))>0 & c.ss==alpha_ak & c.PW>=0.05
         
         dataARremovedPW=[data(1); ((data(2:end)-akPW*data(1:end-1))./(1-akPW))];
         
-        t=Nb_tie_D(dataARremovedPW,resolution);
+        t=Nb_tie(dataARremovedPW,resolution);
         [~,n]=S_test(dataARremovedPW, time);
         vari=Kendall_var(dataARremovedPW,t,n);
         [b1PW,~,~]=Sen_slope(time,dataARremovedPW,vari);
@@ -116,10 +116,10 @@ if sum(~isnan(dataARremoved))>0 & c.ss==alpha_ak & c.PW>=0.05
                 
                 dataDetrendPW=data-b1PW*(time-time(1));
                 c1=akPW; b0PW=b1PW;
-                [akPW, dataARremoved2PW,ssPW]= nanprewhite_ARok(dataDetrendPW,'alpha_ak',alpha_ak);
+                [akPW, dataARremoved2PW,ssPW]= nanprewhite_AR(dataDetrendPW,'alpha_ak',alpha_ak);
                 if akPW>0 & ssPW==95
                     dataARremoved2PW=[data(1);(data(2:end)-akPW*data(1:end-1))./(1-akPW)];
-                    t=Nb_tie_D(dataARremoved2PW,resolution);
+                    t=Nb_tie(dataARremoved2PW,resolution);
                     [~,n]=S_test(dataARremoved2PW, time);
                     vari=Kendall_var(dataARremoved2PW,t,n);
                     [b1PW,~,~]=Sen_slope(time,dataARremoved2PW,vari);

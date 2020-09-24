@@ -1,4 +1,4 @@
-function result=MK_tempAggr_D_V2(data_tempAgg, resolution, varargin)
+function result=MK_tempAggr(data_tempAgg, resolution, varargin)
 
 % The MK test and the Sen slope are applied on the given time granularity,
 % temporal aggregation and prewhitening method.
@@ -124,7 +124,7 @@ if n==1
     %compute all the prewhitened time series
     % dataPW is a structure containing the 3 prewhitened data. 
     % ak_y is the first lag autocorrelation coefficient for the complete time series
-    dataPW=prewhite_D(data, (obs{1}), resolution,'alpha_ak',alpha_ak);
+    dataPW=prewhite(data, (obs{1}), resolution,'alpha_ak',alpha_ak);
     % compute the  Mann-Kendall test without temporal aggregation
     switch PW_method
         case  'PW'
@@ -163,7 +163,7 @@ elseif n>1
             %compute all the prewhitened time series
             % dataPW is a structure containing the 3 prewhitened data.ak_y is the first
             % lag autocorrelation coefficient for the complete time series
-            dataPW=prewhite_D(data, (obs{1}), resolution,'alpha_ak',alpha_ak);
+            dataPW=prewhite(data, (obs{1}), resolution,'alpha_ak',alpha_ak);
         end
         
         
