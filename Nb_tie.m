@@ -31,14 +31,14 @@
      if  resolution>=interval
          error('the given resolution is too large for the considered dataset');
      end
-     step=interval/resolution;
+     step=floor(interval/resolution)+1;
      % if the time series is too big and generate a memory error
      % the number of bins can be decreased with usually low impact on the Mann-Kendall results
 % %      while step>1000
 % %          resolution=resolution*2;
 % %          step=interval/resolution;
 % %      end
-     t=hist(real(data),step)'; 
+     t=histcounts(real(data),'BinLimits',[nanmin(data),nanmin(data)+step*resolution],'BinWidth',resolution)'; 
  else %if the time series contains less than 4 data, return NaN
      t=NaN;
  end
