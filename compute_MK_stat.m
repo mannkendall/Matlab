@@ -1,3 +1,10 @@
+% Copyright 2020 MeteoSwiss, contributors of the original matlab version of the code listed in ORIGINAL_AUTHORS
+% Copyright 2020 UNIMORE, contributors of the R version of the code listed in AUTHORS
+% 
+% Distributed under the terms of the BSD 3-Clause License.
+% 
+% SPDX-License-Identifier: BSD-3-Clause
+
 function [result, S, vari,Z]=compute_MK_stat(time,data,resolution, varargin)
 % compute all the components for the MK statistic of the main MK function
 
