@@ -224,6 +224,7 @@ elseif n>1
     switch PW_method
         case {'PW','TFPW_Y','TFPW_WS','VCTFPW'}
             Ztot=STD_normale_var(nansum(S),nansum(vari));
+            Stot=nansum(S);
             if sum(~isnan(dataPW.PW)) > 10
                 result(m+1).P=2*(1-normcdf(abs(Ztot),0,1));
             else
@@ -246,6 +247,7 @@ elseif n>1
                 Ptot_PW=2*(1-normcdf(abs(Ztot_PW),0,1));
             else
                 load ('Prob_MK_n');
+                Stot_PW=nansum(S_PW);
                 Ptot_PW=Prob_MK_n(abs(Stot_PW)+1,sum(~isnan(dataPW.PW)));
             end
             % compute the statistical significance for TFPW_Y
@@ -254,6 +256,7 @@ elseif n>1
                 Ptot_TFPW_Y=2*(1-normcdf(abs(Ztot_TFPW_Y),0,1));
             else
                 load ('Prob_MK_n');
+                Stot_TFPW_Y=nansum(S_TFPW_Y);
                 Ptot_TFPW_Y=Prob_MK_n(abs(Stot_TFPW_Y)+1,sum(~isnan(dataPW.TFPW_Y))); %
             end
             %determine the ss
