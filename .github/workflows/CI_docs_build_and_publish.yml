@@ -31,7 +31,7 @@ jobs:
       - name: Checkout live docs
         uses: actions/checkout@v2
         with:
-            repository: mannkendall/Python
+            repository: mannkendall/Matlab
             ref: gh-pages
             path: './docs/build/'
 
