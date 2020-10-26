@@ -135,21 +135,17 @@ if n==1
     switch PW_method
         case  'PW'
             [result,~ , ~,~ ]=compute_MK_stat(data.Time,dataPW.PW,resolution,'alpha_MK',alpha_MK,'alpha_CL',alpha_CL);
-            %%%result.ak=ak_y.PW;
         case  'TFPW_Y'
             [result,~ , ~,~ ]=compute_MK_stat(data.Time,dataPW.TFPW_Y,resolution,'alpha_MK',alpha_MK,'alpha_CL',alpha_CL);
-            %%%result.ak=ak_y.TFPW_Y;
         case  'TFPW_WS'
             [result,~ , ~, ~]=compute_MK_stat(data.Time,dataPW.TFPW_WS,resolution,'alpha_MK',alpha_MK,'alpha_CL',alpha_CL);
-            %%%result.ak=ak_y.TFPW_WS;
         case  'VCTFPW'
             [result,~ , ~, ~]=compute_MK_stat(data.Time,dataPW.VCTFPW,resolution,'alpha_MK',alpha_MK,'alpha_CL',alpha_CL);
-            %%%result.ak=ak_y.VCTFPW;
         case  '3PW'
             [result_PW,~ , ~, ~]=compute_MK_stat(data.Time,dataPW.PW,resolution,'alpha_MK',alpha_MK,'alpha_CL',alpha_CL);
             [result_TFPW_Y,~ , ~, ~]=compute_MK_stat(data.Time,dataPW.TFPW_Y,resolution,'alpha_MK',alpha_MK,'alpha_CL',alpha_CL);
             [result_VCTFPW,~ , ~, ~]=compute_MK_stat(data.Time,dataPW.VCTFPW,resolution,'alpha_MK',alpha_MK,'alpha_CL',alpha_CL);
-            %%%result.ak=ak_y.VCTFPW;
+
             %determine the P and ss
             [result.P, result.ss]=Prob_3PW(result_PW.P,result_TFPW_Y.P, alpha_MK);
             result.slope=result_VCTFPW.slope;
@@ -182,19 +178,15 @@ elseif n>1
                 case  'PW'
                     %compute of Mann-Kendall parameters for PW method
                     [result(m), S(m), vari(m), Z(m)]=compute_MK_stat(dat_mois.Time,dat_mois.PW,resolution,'alpha_MK',alpha_MK,'alpha_CL',alpha_CL);
-                    %%%ak=ak_y.PW;
                 case  'TFPW_Y'
                     %compute of Mann-Kendall parameters for TFPW_Y method
                     [result(m), S(m), vari(m), Z(m)]=compute_MK_stat(dat_mois.Time,dat_mois.TFPW_Y,resolution,'alpha_MK',alpha_MK,'alpha_CL',alpha_CL);
-                    %%%ak=ak_y.TFPW_Y;
                 case 'TFPW_WS'
                     %compute of Mann-Kendall parameters for TFPW_WS method
                     [result(m), S(m), vari(m), Z(m)]=compute_MK_stat(dat_mois.Time,dat_mois.TFPW_WS,resolution,'alpha_MK',alpha_MK,'alpha_CL',alpha_CL);
-                    %%%ak=ak_y.TFPW_WS;
                 case  'VCTFPW'
                     %compute of the slope with VCTFPW method
                     [result(m), S(m), vari(m), Z(m)]=compute_MK_stat(dat_mois.Time,dat_mois.VCTFPW,resolution,'alpha_MK',alpha_MK,'alpha_CL',alpha_CL);
-                    %%%ak=ak_y.VCTFPW;
                 case  '3PW'
                     [result_PW(m),S_PW(m), vari_PW(m), ~]=compute_MK_stat(dat_mois.Time,dat_mois.PW,resolution,'alpha_MK',alpha_MK,'alpha_CL',alpha_CL);
                     [ result_TFPW_Y(m),S_TFPW_Y(m), vari_TFPW_Y(m), ~]=compute_MK_stat(dat_mois.Time,dat_mois.TFPW_Y,resolution,'alpha_MK',alpha_MK,'alpha_CL',alpha_CL);
@@ -270,8 +262,7 @@ elseif n>1
     %freedom. Seasonal trends are homogeneous is Xhomo is smaller
     %than the threshold defined by the degree of freedom and the
     %confidence level alpha_Xhomo.
-    %condition: yearly slope not given if the seasons are not
-    %homogeneous
+    %condition: yearly slope not given if the seasons are not homogeneous
     
     if Xhomo<=chi2inv(1-alpha_Xhomo/100,n-1)
         result(m+1).slope=nanmedian([result(1:m).slope]);
