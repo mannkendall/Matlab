@@ -1,6 +1,6 @@
 # Created june 2020; F.P.A. Vogt; frederic.vogt@alumni.anu.edu.au
 
-name: CI_docs
+name: CI_docs_check
 
 on:
   push:
@@ -34,8 +34,8 @@ jobs:
       # Here, let's install our module to make sure all the dependencies specified in setup.py are
       # also installed
       #- name: Install our module
-        #run: pip install -e .
-        #shell: bash
+    #    run: pip install -e .
+    #    shell: bash
 
       # Launch a home-made python script to compile and check the docs.
       - name: Compile the docs and look for errors/warnings
