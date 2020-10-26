@@ -15,22 +15,22 @@
 # sys.path.insert(0, os.path.abspath('.'))
 
 # Get the code version from the version file.
-#from pathlib import Path
+from pathlib import Path
 
 # Where are we located ?
-#file_absolute_path = Path(__file__).absolute()
+file_absolute_path = Path(__file__).absolute()
 
 # Get the version
-#version_file = file_absolute_path.parents[2] / 'src' / 'mannkendall' / 'mk_version.py'
-#with version_file.open() as fid:
-#    vers = next(line.split("'")[1] for line in fid.readlines() if 'VERSION' in line)
+version_file = file_absolute_path.parents[2] / 'VERSION'
+with version_file.open() as fid:
+    vers = next(line.split("'")[1] for line in fid.readlines() if 'VERSION' in line)
 
 # -- Project information -----------------------------------------------------
 
 project = 'mannkendall (Matlab)'
 copyright = '2020, MeteoSwiss.'
 author = 'M. Collaud Coen.'
-version = '1.0.0' #TODO: how is the code version set in matlab ?
+version = vers
 
 # -- General configuration ---------------------------------------------------
 
