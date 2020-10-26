@@ -1,5 +1,4 @@
 % Copyright 2020 MeteoSwiss, contributors of the original matlab version of the code listed in ORIGINAL_AUTHORS
-% Copyright 2020 UNIMORE, contributors of the R version of the code listed in AUTHORS
 % 
 % Distributed under the terms of the BSD 3-Clause License.
 % 
@@ -238,7 +237,7 @@ elseif n>1
             end
             
             %compute xi-carre to test the homogeneity between months.
-            Xhomo=nansum(Z(1:m).^2)-12*(nanmean(Z(1:m))).^2;
+            Xhomo=nansum(Z(1:m).^2)-n*(nanmean(Z(1:m))).^2;
             
         case '3PW'
             % compute the statistical significance for PW
@@ -264,7 +263,7 @@ elseif n>1
             
             %compute xi-carre to test the homogeneity between months. Since the slope
             %is computeated from VCTFPW, the homogeneity is also computeated from VCTFPW
-            Xhomo=nansum(Z_VCTFPW(1:m).^2)-12*(nanmean(Z_VCTFPW(1:m))).^2;
+            Xhomo=nansum(Z_VCTFPW(1:m).^2)-n*(nanmean(Z_VCTFPW(1:m))).^2;
     end
     %write the yearly slope and CL
     %Xhomo has a chi-squared distributions with n-1 and 1 degree of

@@ -1,3 +1,5 @@
+% varg_proof v1.1: licensed by Tami Bond yark@colostate.edu under Creative Commons by-sa 2.0
+
 %% varg_proof(vargin, oknames, giveoutput) is an operator for varargin. It checks
 %%   whether all the arguments are present in oknames.
 
