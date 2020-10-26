@@ -1,4 +1,10 @@
- function t=Nb_tie(data,resolution)
+%  Copyright 2020 MeteoSwiss, contributors of the original matlab version of the code listed in ORIGINAL_AUTHORS
+% 
+% Distributed under the terms of the BSD 3-Clause License.
+% 
+% SPDX-License-Identifier: BSD-3-Clause
+
+function t=Nb_tie(data,resolution)
  
  % compute the number of data considered equivalent and treated as ties
  
@@ -31,14 +37,14 @@
      if  resolution>=interval
          error('the given resolution is too large for the considered dataset');
      end
-     step=interval/resolution;
+     step=floor(interval/resolution)+1;
      % if the time series is too big and generate a memory error
      % the number of bins can be decreased with usually low impact on the Mann-Kendall results
 % %      while step>1000
 % %          resolution=resolution*2;
 % %          step=interval/resolution;
 % %      end
-     t=hist(real(data),step)'; 
+     t=histcounts(real(data),'BinLimits',[nanmin(data),nanmin(data)+step*resolution],'BinWidth',resolution)'; 
  else %if the time series contains less than 4 data, return NaN
      t=NaN;
  end

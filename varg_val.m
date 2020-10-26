@@ -1,3 +1,5 @@
+% varg_proof v1.1: licensed by Tami Bond yark@colostate.edu under Creative Commons by-sa 2.0
+
 %% varg_val(vargin, strname, defaultval) is an operator for varargin. It checks
 %%   whether strname is present as an argument and, if so, returns the value. 
 %%   If it is not present, returns defaultval.

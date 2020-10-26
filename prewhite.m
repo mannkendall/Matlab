@@ -1,3 +1,10 @@
+
+% Copyright 2020 MeteoSwiss, contributors of the original matlab version of the code listed in ORIGINAL_AUTHORS
+% 
+% Distributed under the terms of the BSD 3-Clause License.
+% 
+% SPDX-License-Identifier: BSD-3-Clause
+
 function dataPW=prewhite(data, colonne, resolution,varargin)
 
 %calculate all the necessary prewhitened datasets to asses the statistical

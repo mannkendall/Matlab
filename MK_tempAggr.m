@@ -1,3 +1,9 @@
+% Copyright 2020 MeteoSwiss, contributors of the original matlab version of the code listed in ORIGINAL_AUTHORS
+% 
+% Distributed under the terms of the BSD 3-Clause License.
+% 
+% SPDX-License-Identifier: BSD-3-Clause
+
 function result=MK_tempAggr(data_tempAgg, resolution, varargin)
 
 % The MK test and the Sen slope are applied on the given time granularity,
@@ -217,6 +223,7 @@ elseif n>1
     switch PW_method
         case {'PW','TFPW_Y','TFPW_WS','VCTFPW'}
             Ztot=STD_normale_var(nansum(S),nansum(vari));
+            Stot=nansum(S);
             if sum(~isnan(dataPW.PW)) > 10
                 result(m+1).P=2*(1-normcdf(abs(Ztot),0,1));
             else
@@ -230,7 +237,7 @@ elseif n>1
             end
             
             %compute xi-carre to test the homogeneity between months.
-            Xhomo=nansum(Z(1:m).^2)-12*(nanmean(Z(1:m))).^2;
+            Xhomo=nansum(Z(1:m).^2)-n*(nanmean(Z(1:m))).^2;
             
         case '3PW'
             % compute the statistical significance for PW
@@ -239,6 +246,7 @@ elseif n>1
                 Ptot_PW=2*(1-normcdf(abs(Ztot_PW),0,1));
             else
                 load ('Prob_MK_n');
+                Stot_PW=nansum(S_PW);
                 Ptot_PW=Prob_MK_n(abs(Stot_PW)+1,sum(~isnan(dataPW.PW)));
             end
             % compute the statistical significance for TFPW_Y
@@ -247,6 +255,7 @@ elseif n>1
                 Ptot_TFPW_Y=2*(1-normcdf(abs(Ztot_TFPW_Y),0,1));
             else
                 load ('Prob_MK_n');
+                Stot_TFPW_Y=nansum(S_TFPW_Y);
                 Ptot_TFPW_Y=Prob_MK_n(abs(Stot_TFPW_Y)+1,sum(~isnan(dataPW.TFPW_Y))); %
             end
             %determine the ss
@@ -254,7 +263,7 @@ elseif n>1
             
             %compute xi-carre to test the homogeneity between months. Since the slope
             %is computeated from VCTFPW, the homogeneity is also computeated from VCTFPW
-            Xhomo=nansum(Z_VCTFPW(1:m).^2)-12*(nanmean(Z_VCTFPW(1:m))).^2;
+            Xhomo=nansum(Z_VCTFPW(1:m).^2)-n*(nanmean(Z_VCTFPW(1:m))).^2;
     end
     %write the yearly slope and CL
     %Xhomo has a chi-squared distributions with n-1 and 1 degree of
