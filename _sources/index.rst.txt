@@ -3,7 +3,7 @@
 
 |name| |version| |stars| |watch|
 ================================
-|last-commit| |issues|
+|github| |DOI| |last-commit| |issues|
 
 
 Welcome to the documentation of the |name| package.
