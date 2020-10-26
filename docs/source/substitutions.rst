@@ -12,3 +12,9 @@
 
 .. |watch| image:: https://img.shields.io/github/watchers/mannkendall/Matlab.svg?style=social&label=Watch
    :target: https://github.com/mannkendall/Matlab
+
+.. |github| image:: https://img.shields.io/github/release/mannkendall/Matlab.svg
+   :target: https://github.com/mannkendall/Matlab/releases
+
+.. |DOI| image:: https://zenodo.org/badge/291951291.svg
+   :target: https://zenodo.org/badge/latestdoi/291951291
