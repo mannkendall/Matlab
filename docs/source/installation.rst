@@ -10,7 +10,6 @@ The most recent release of |name| is also available for download from its
 
 Requirements
 ------------
+The code was developped on the Matlab R2019a release and also works on the R2017a release.
 
 
-Testing the installation
-------------------------
