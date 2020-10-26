@@ -14,7 +14,8 @@ Acknowledging |name|
 
    `Collaud Coen et al., 2020, ... <http:....>`__
 
-3. |name| relies on external Matlab libraries that require & deserve to be acknowledged in their own
+3.|name| relies on Tami Bond (yark@colostate.edu) functions varg_proof and varg_val under their own license that can also be acknowledged
+4.|name| relies on external Matlab libraries that require & deserve to be acknowledged in their own
    right. The following LaTeX blurb is one way to do so:
 
    .. code-block:: latex
