@@ -24,10 +24,10 @@ An exemple without temporal aggregation:
 .. code-block:: Matlab
 
    test_data=timetable(datetime(datevec([datenum([2000 01 01]):365:datenum([2010 01 01])])));
-   test_datay.param=[1.92 2.28 2.71 2.89 2.82 4.02 3.25 3.49 4.94 3.75 3.25]';
-   test_resulty=MK_tempAggr(test_datay,0.001)
+   test_data.param=[1.92 2.28 2.71 2.89 2.82 4.02 3.25 3.49 4.94 3.75 3.25]';
+   test_result=MK_tempAggr(test_data,0.001)
 
-   test_resulty = 
+   test_result = 
 
    struct with fields:
 
@@ -51,11 +51,11 @@ An exemple with a temporal segmentation into 4 quartals:
     test_data_sea3.param=[4.56 4.13 4.31 1.83 3.22 5.06 4.39 4.13 4.06 3.20 4.01 3.62 3.78 3.61 3.42 3.65 2.39 3.01 3.03]';
     test_data_sea4.param=[4.22 4.78 2.96 3.23 2.82 2.96 3.12 3.49 2.73 2.61 3.00 2.66 3.49 2.58 2.32 2.10 2.38 2.29 2.07]';
 
-    test_data_seax(1).obs=test_data_sea1;
-    test_data_seax(2).obs=test_data_sea2;
-    test_data_seax(3).obs=test_data_sea3;
-    test_data_seax(4).obs=test_data_sea4;
-    test_result_sea=MK_tempAggr(test_data_seax,0.001);
+    test_data_sea(1).obs=test_data_sea1;
+    test_data_sea(2).obs=test_data_sea2;
+    test_data_sea(3).obs=test_data_sea3;
+    test_data_sea(4).obs=test_data_sea4;
+    test_result_sea=MK_tempAggr(test_data_sea,0.001);
 
 .. csv-table::     Results
    :header: "  ", "P", "ss", "Slope", "UCL", "LCL"
