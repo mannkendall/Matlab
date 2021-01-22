@@ -65,7 +65,7 @@ An exemple with a temporal segmentation into 4 quartals:
    "2nd quartal", 0.0051, 95, "-0.0947", "-0.0452", "-0.1599"
    "3rd quartal", 0.0689, -1, "-0.0626", "-0.0168", "-0.1167"
    "4th quartal", 0.0064, 95, "-0.0626", "-0.0337", "-0.1170"
-   "Year", 1.365e-6, 95, "-0.029", "-0.0304", "-0.1168"
+   "Year", 1.365e-6, 95, "-0.0629", "-0.0304", "-0.1168"
    
 
 Function description:
