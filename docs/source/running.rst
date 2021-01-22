@@ -12,11 +12,61 @@ segmentation and confidence limit is:
 
 For example:
 
+How to call the function:
+
 .. code-block:: Matlab
 
-    result=MK_tempAggr(data, 0.01);
-    result=MK_tempAggr(data, 2, ‘PW_method’,’TFPW_WS’,’alpha_MK’,99,’alpha_ak’,95, ‘alpha_CL’,95, ‘alpha_Xhomo’,90);
+   result=MK_tempAggr(data, 0.01);
+   result=MK_tempAggr(data, 2, ‘PW_method’,’TFPW_WS’,’alpha_MK’,99,’alpha_ak’,95, ‘alpha_CL’,95, ‘alpha_Xhomo’,90);
+    
+An exemple without temporal aggregation:
+    
+.. code-block:: Matlab
 
+   test_data=timetable(datetime(datevec([datenum([2000 01 01]):365:datenum([2010 01 01])])));
+   test_datay.param=[1.92 2.28 2.71 2.89 2.82 4.02 3.25 3.49 4.94 3.75 3.25]';
+   test_resulty=MK_tempAggr(test_datay,0.001)
+
+   test_resulty = 
+
+   struct with fields:
+
+   P: 0.0077
+   ss: 95
+   slope: 0.1861
+   UCL: 0.3052
+   LCL: 0.1301
+
+An exemple with a temporal segmentation into 4 quartals: 
+
+.. code-block:: Matlab
+
+    test_data_sea1=timetable(datetime(datevec([datenum([2000 01 01]):365:datenum([2018 01 01])])));
+    test_data_sea2=timetable(datetime(datevec([datenum([2000 04 01]):365:datenum([2018 04 01])])));
+    test_data_sea3=timetable(datetime(datevec([datenum([2000 07 01]):365:datenum([2018 07 01])])));
+    test_data_sea4=timetable(datetime(datevec([datenum([2000 10 01]):365:datenum([2018 10 01])])));
+
+    test_data_sea1.param=[ 3.20 2.92 3.95 1.80 2.45 2.70 2.22 2.10 2.08 2.21 1.93 2.15 2.03 1.82 1.94 2.24 1.67 1.34 1.61]';
+    test_data_sea2.param=[3.92 2.99 4.37 3.04 3.12 4.07 3.91 3.42 2.94 3.14 2.53 2.80 2.98 2.86 3.22 2.31 2.03 1.59 2.14]';
+    test_data_sea3.param=[4.56 4.13 4.31 1.83 3.22 5.06 4.39 4.13 4.06 3.20 4.01 3.62 3.78 3.61 3.42 3.65 2.39 3.01 3.03]';
+    test_data_sea4.param=[4.22 4.78 2.96 3.23 2.82 2.96 3.12 3.49 2.73 2.61 3.00 2.66 3.49 2.58 2.32 2.10 2.38 2.29 2.07]';
+
+    test_data_seax(1).obs=test_data_sea1;
+    test_data_seax(2).obs=test_data_sea2;
+    test_data_seax(3).obs=test_data_sea3;
+    test_data_seax(4).obs=test_data_sea4;
+    test_result_sea=MK_tempAggr(test_data_seax,0.001);
+
+.. csv-table::     Results
+   :header: "  ", "P", "ss", "Slope", "UCL", "LCL"
+   :widths: auto
+   
+   "1st quartal", 0.0280, 95, "-0.0631", "-0.0272", "-0.0888"
+   "2nd quartal", 0.0051, 95, "-0.0947", "-0.0452", "-0.1599"
+   "3rd quartal", 0.0689, -1, "-0.0626", "-0.0168", "-0.1167"
+   "4th quartal", 0.0064, 95, "-0.0626", "-0.0337", "-0.1170"
+   "Year", 1.365e-6, 95, "-0.029", "-0.0304", "-0.1168"
+   
 
 Function description:
 ---------------------
