@@ -5,7 +5,7 @@
    :target: https://github.com/mannkendall/Matlab
 
 .. |issues| image:: https://img.shields.io/github/issues/mannkendall/Matlab.svg?colorB=b4001e
-   :target: https://github.com/annkendall/Matlab/issues
+   :target: https://github.com/mannkendall/Matlab/issues
 
 .. |stars| image:: https://img.shields.io/github/stars/mannkendall/Matlab.svg?style=social&label=Stars
    :target: https://github.com/mannkendall/Matlab
